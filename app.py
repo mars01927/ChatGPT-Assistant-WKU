@@ -15,7 +15,7 @@ else:
     openai.api_base = "https://api.openai.com/v1"
 
 st.set_page_config(page_title="WKU CPS Department Assistant", layout="wide", page_icon="🤖")
-# 自定义元素样式
+
 st.markdown(css_code, unsafe_allow_html=True)
 
 if "initial_settings" not in st.session_state:
@@ -30,18 +30,17 @@ if "initial_settings" not in st.session_state:
     st.session_state["error_info"] = ""
     st.session_state["current_chat_index"] = 0
     st.session_state["user_input_content"] = ""
-    # 读取全局设置
+
     if os.path.exists("./set.json"):
         with open("./set.json", "r", encoding="utf-8") as f:
             data_set = json.load(f)
         for key, value in data_set.items():
             st.session_state[key] = value
-    # 设置完成
+
     st.session_state["initial_settings"] = True
 
 with st.sidebar:
     st.markdown("# 🤖 Chat")
-    # 创建容器的目的是配合自定义组件的监听操作
     chat_container = st.container()
     with chat_container:
         current_chat = st.radio(
@@ -57,7 +56,7 @@ with st.sidebar:
     st.write("---")
 
 
-# 数据写入文件
+
 def write_data(new_chat_name=current_chat):
     if "apikey" in st.secrets:
         st.session_state["paras"] = {
@@ -86,9 +85,9 @@ def reset_chat_name_fun(chat_name):
     current_chat_index = st.session_state["history_chats"].index(current_chat)
     st.session_state["history_chats"][current_chat_index] = new_name
     st.session_state["current_chat_index"] = current_chat_index
-    # 写入新文件
+
     write_data(new_name)
-    # 转移数据
+
     st.session_state["history" + new_name] = st.session_state["history" + current_chat]
     for item in [
         "context_select",
@@ -158,11 +157,11 @@ with st.sidebar:
     st.caption(
         """
     - Made by WKU CPS Department
-    - Zhen Ma
+    - Zhen Ma, Hongtao Lu, Zike Deng, Chi Zhang
     """
     )
 
-# 加载数据
+
 if "history" + current_chat not in st.session_state:
     for key, value in load_data(st.session_state["path"], current_chat).items():
         if key == "history":
@@ -171,15 +170,15 @@ if "history" + current_chat not in st.session_state:
             for k, v in value.items():
                 st.session_state[k + current_chat + "value"] = v
 
-# 保证不同chat的页面层次一致，否则会导致自定义组件重新渲染
+
 container_show_messages = st.container()
 container_show_messages.write("")
-# 对话展示
+
 with container_show_messages:
     if st.session_state["history" + current_chat]:
         show_messages(current_chat, st.session_state["history" + current_chat])
 
-# 核查是否有对话需要删除
+
 if any(st.session_state["delete_dict"].values()):
     for key, value in st.session_state["delete_dict"].items():
         try:
@@ -251,13 +250,13 @@ def save_set(arg):
             )
 
 
-# 输入内容展示
+
 area_user_svg = st.empty()
 area_user_content = st.empty()
-# 回复展示
+
 area_gpt_svg = st.empty()
 area_gpt_content = st.empty()
-# 报错展示
+
 area_error = st.empty()
 
 st.write("\n")
@@ -410,7 +409,7 @@ with tap_input:
 
     def input_callback():
         if st.session_state["user_input_area"] != "":
-            # 修改窗口名称
+
             user_input_content = st.session_state["user_input_area"]
             df_history = pd.DataFrame(st.session_state["history" + current_chat])
             if df_history.empty or len(df_history.query('role!="system"')) == 0:
@@ -438,9 +437,9 @@ with tap_input:
         "open_voice_toolkit_value" not in st.session_state
         or st.session_state["open_voice_toolkit_value"]
     ):
-        # 语音输入功能
+
         vocie_result = voice_toolkit()
-        # vocie_result会保存最后一次结果
+
         if (
             vocie_result and vocie_result["voice_result"]["flag"] == "interim"
         ) or st.session_state["voice_flag"] == "interim":
@@ -452,7 +451,7 @@ with tap_input:
 
 
 def get_model_input():
-    # 需输入的历史记录
+
     context_level = st.session_state["context_level" + current_chat]
     history = get_history_input(
         st.session_state["history" + current_chat], context_level
@@ -463,7 +462,7 @@ def get_model_input():
     ]:
         if ctx != "":
             history = [{"role": "system", "content": ctx}] + history
-    # 设定的模型参数
+
     paras = {
         "temperature": st.session_state["temperature" + current_chat],
         "top_p": st.session_state["top_p" + current_chat],
@@ -479,21 +478,21 @@ if st.session_state["user_input_content"] != "":
         st.session_state[current_chat + "report"] = ""
     st.session_state["pre_user_input_content"] = st.session_state["user_input_content"]
     st.session_state["user_input_content"] = ""
-    # 临时展示
+
     show_each_message(
         st.session_state["pre_user_input_content"],
         "user",
         "tem",
         [area_user_svg.markdown, area_user_content.markdown],
     )
-    # 模型输入
+
     history_need_input, paras_need_input = get_model_input()
-    # 调用接口
+
     with st.spinner("🤔"):
         try:
             if apikey := st.session_state["apikey_input"]:
                 openai.api_key = apikey
-            # 配置临时apikey，此时不会留存聊天记录，适合公开使用
+
             elif "apikey_tem" in st.secrets:
                 openai.api_key = st.secrets["apikey_tem"]
             # 注：当st.secrets中配置apikey后将会留存聊天记录，即使未使用此apikey
@@ -545,11 +544,10 @@ if ("r" in st.session_state) and (current_chat == st.session_state["chat_of_r"])
                 )
     except ChunkedEncodingError:
         area_error.error("The network condition is not good. Please refresh the page and try again.")
-    # 应对stop情形
     except Exception:
         pass
     else:
-        # 保存内容
+
         st.session_state["history" + current_chat].append(
             {"role": "user", "content": st.session_state["pre_user_input_content"]}
         )
@@ -557,7 +555,7 @@ if ("r" in st.session_state) and (current_chat == st.session_state["chat_of_r"])
             {"role": "assistant", "content": st.session_state[current_chat + "report"]}
         )
         write_data()
-    # 用户在网页点击stop时，ss某些情形下会暂时为空
+
     if current_chat + "report" in st.session_state:
         st.session_state.pop(current_chat + "report")
     if "r" in st.session_state:
@@ -567,17 +565,14 @@ if ("r" in st.session_state) and (current_chat == st.session_state["chat_of_r"])
 # 添加事件监听
 v1.html(js_code, height=0)
 
-# 图像路径
 gif_path = "https://i.postimg.cc/sDkMbr7s/bear.gif"
 
-# 使用 HTML 和 CSS 来调整图像的大小和水平居中
 gif_html = f"""
     <div style="text-align: center; margin-top: -50px;">  
         <img src="{gif_path}" style="width: 18%;">
     </div>
 """
 
-# 使用 Streamlit 的 markdown 函数来渲染 HTML
 st.markdown(gif_html, unsafe_allow_html=True)
 
 
