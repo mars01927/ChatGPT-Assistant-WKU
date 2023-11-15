@@ -151,7 +151,7 @@ with st.sidebar:
     st.write("\n")
     st.text_input("set the name of window：", key="set_chat_name", placeholder="Click to enter")
     st.selectbox(
-        "Choose Model：", index=0, options=["gpt-3.5-turbo", "gpt-4"], key="select_model"
+        "Choose Model：", index=0, options=["gpt-3.5-turbo", "gpt-4-1106-preview"], key="select_model"
     )
     st.write("\n")
     st.caption(
