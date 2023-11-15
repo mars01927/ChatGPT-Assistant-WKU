@@ -566,3 +566,20 @@ if ("r" in st.session_state) and (current_chat == st.session_state["chat_of_r"])
 
 # 添加事件监听
 v1.html(js_code, height=0)
+
+# 图像路径
+gif_path = "https://i.postimg.cc/sDkMbr7s/bear.gif"
+
+# 使用 HTML 和 CSS 来调整图像的大小和水平居中
+gif_html = f"""
+    <div style="text-align: center; margin-top: -50px;">  
+        <img src="{gif_path}" style="width: 18%;">
+    </div>
+"""
+
+# 使用 Streamlit 的 markdown 函数来渲染 HTML
+st.markdown(gif_html, unsafe_allow_html=True)
+
+
+
+
