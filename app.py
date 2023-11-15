@@ -568,7 +568,7 @@ v1.html(js_code, height=0)
 gif_path = "https://i.postimg.cc/sDkMbr7s/bear.gif"
 
 gif_html = f"""
-    <div style="text-align: center; margin-top: -55px;">  
+    <div style="text-align: center; margin-top: -35px;">  
         <img src="{gif_path}" style="width: 18%;">
     </div>
 """
