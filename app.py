@@ -14,7 +14,7 @@ if "apibase" in st.secrets:
 else:
     openai.api_base = "https://api.openai.com/v1"
 
-st.set_page_config(page_title="WKU CPS Department Assistant", layout="wide", page_icon="🤖")
+st.set_page_config(page_title="WKU CS Department Assistant", layout="wide", page_icon="🤖")
 
 st.markdown(css_code, unsafe_allow_html=True)
 
@@ -156,7 +156,7 @@ with st.sidebar:
     st.write("\n")
     st.caption(
         """
-    - Made by WKU CPS Department
+    - Made FOR WKU CS Department in CPS3601
     - Zhen Ma, Hongtao Lu, Zike Deng, Chi Zhang
     """
     )
@@ -260,7 +260,7 @@ area_gpt_content = st.empty()
 area_error = st.empty()
 
 st.write("\n")
-st.header("WKU CPS Department Assistant")
+st.header("WKU CS Department Assistant")
 tap_input, tap_context, tap_model, tab_func = st.tabs(
     ["💬 Chat", "🗒️ Set", "⚙️ Model", "🛠️ Function"]
 )
